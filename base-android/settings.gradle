@@ -1,0 +1,21 @@
+
+//dependencyResolutionManagement {
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//}
+
+// Include the host app project.
+include ':app'                                    // assumed existing content
+setBinding(new Binding([gradle: this]))                                // new
+evaluate(new File(                                                     // new
+        settingsDir.parentFile,                                              // new
+        'flutter_library/.android/include_flutter.groovy'                         // new
+))
+//include ':flutter_library'
+
+
+include ':flutter_library'
+project(':flutter_library').projectDir = new File('../flutter_library')
