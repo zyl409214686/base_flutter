@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'CitysWidget.dart';
-import 'HotWeiget.dart';
-import 'MineWeiget.dart';
-import 'MoviesWeiget.dart';
+import 'citys_widget.dart';
+import 'hot_weiget.dart';
+import 'mine_widget.dart';
+import 'movies_widget.dart';
 
 void main() => runApp(MyApp());
 
@@ -58,12 +58,14 @@ class _MyHomePageState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('豆瓣电影'),
-        ),
-        body: Center(
-          child: _widgetItems[_selectIndex],
-        ),
+        // appBar: AppBar(
+        //   title: const Text('豆瓣电影'),
+        // ),
+
+        body: SafeArea(
+            child:Center(
+            child: _widgetItems[_selectIndex],
+        )),
         bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(

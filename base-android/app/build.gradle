@@ -4,6 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/zouyuelong5/github/base-project/base-android/testkey111')
+            storePassword '111111'
+            keyPassword '111111'
+            keyAlias 'key0'
+        }
+    }
     compileSdkVersion COMPILE_SDK_VERSION
 
     defaultConfig {
