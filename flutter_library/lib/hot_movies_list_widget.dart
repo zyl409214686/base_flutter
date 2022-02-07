@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_library/common/utils/log_util.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 import 'hot_movies_item_widget.dart';
 import 'bean/HotMovie.dart';
 import 'config/httpHeaders.dart';
+import 'package:dio/dio.dart';
 
 class HotMoviesListWidget extends StatefulWidget {
   @override
@@ -47,18 +50,29 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> {
     });
   }
 
+  // void getHttp() async {
+  //   try {
+  //     var response = await Dio().get('http://www.google.com');
+  //     print(response);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
   void _getData() async {
     List<HotMovie> serverDataList = [];
-    var response = await http.get(Uri.parse('https://m.maoyan.com/ajax/movieOnInfoList'), headers: httpHeaders);
-    // var response = await http.get('https://pagead2.googlesyndication.com/getconfig/sodar?sv=200&tid=gda&tv=r20210915&st=env', headers: httpHeaders);
-
+    // var response = await http.get(Uri.parse('https://m.maoyan.com/ajax/movieOnInfoList'), headers: httpHeaders);
+    var response = await Dio().get('https://m.maoyan.com/ajax/movieOnInfoList',
+        options: Options(headers: httpHeaders));
     print('response.statusCode:'+response.statusCode.toString());
     //成功获取数据
     if (response.statusCode == 200) {
-      print('response.body:'+response.body);
-      var responseJson = json.decode(response.body);
-      for (dynamic data in responseJson['movieList']) {
-        print("data:"+ data.toString());
+      // LogUtil.d('response.body:'+response.body);
+      // log('response.body:' + response.data['movieList']);
+      //
+      // var responseJson = json.decode(response.data);
+      for (dynamic data in response.data['movieList']) {
+        // print("data:"+ data.toString());
         HotMovie hotMovieData = HotMovie.fromJson(data);
         serverDataList.add(hotMovieData);
       }

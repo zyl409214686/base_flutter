@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,12 +27,39 @@ class HotMoviesItemWidgetState extends State<HotMoviesItemWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.network(
-            widget.mHotMoveData.img.toString().replaceFirst('w.h/', '').toString(),
-            width: 80,
-            height: 120,
-            fit: BoxFit.cover,
-          ),
+          // FadeInImage(
+          //   image:  widget.mHotMoveData.img.toString().replaceFirst('w.h/', '').toString(),
+          //
+          //   width: 80,
+          //   height: 120,
+          //   fit: BoxFit.cover,
+          // )
+          // FadeInImage.assetNetwork(placeholder:'assets/item_placeholder.png',
+          //   image:widget.mHotMoveData.img.toString().replaceFirst('w.h/', '').toString(),
+          //   height: 80, width: 120,fit: BoxFit.contain,),
+
+          ExtendedImage.network(
+              widget.mHotMoveData.img.toString().replaceFirst('w.h/', '').toString(),
+              width: 120,
+              height:  80,
+              fit: BoxFit.contain,
+              cache: true,
+              loadStateChanged: (ExtendedImageState state) {
+                switch (state.extendedImageLoadState) {
+                  case LoadState.completed:
+                    return state.completedWidget;
+                    break;
+                  default:
+                    return Image.asset(
+                      "assets/item_placeholder.png",
+                      width: 120,
+                      height: 80,
+                      fit: BoxFit.contain,
+                    );
+                    break;
+                }
+              }),
+
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(left: 20),
