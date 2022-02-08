@@ -2,6 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_library/common/utils/log_util.dart';
+import 'package:flutter_library/config/Constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeModel with ChangeNotifier {
 
@@ -16,15 +19,30 @@ class ThemeModel with ChangeNotifier {
       iconTheme:IconThemeData(color: Colors.blue),//icon主题色为蓝色
       textTheme: TextTheme(body1: TextStyle(color: Colors.red)));//文本主题色为红色);
 
-  ThemeData curTheme = kAndroidTheme;
 
-  ThemeData updateTheme(){
+  ThemeData curTheme;
+
+  ThemeModel(){
+    initTheme();
+  }
+
+  Future<void> initTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    curTheme = prefs.getBool(SP_THEME_DARK)?kAndroidTheme:kIOSTheme;
+    LogUtil.d("initTheme ${prefs.getBool(SP_THEME_DARK)}");
+    notifyListeners();
+  }
+
+  Future<ThemeData> updateTheme() async {
     ThemeData theme;
     if(curTheme == kAndroidTheme)
       theme = kIOSTheme;
     else
       theme = kAndroidTheme;
     curTheme = theme;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("CUR_THEME_DARK",  (curTheme == kAndroidTheme)? true:false);
+    LogUtil.d("setTheme  ${(curTheme == kAndroidTheme)}");
     notifyListeners();
   }
 }

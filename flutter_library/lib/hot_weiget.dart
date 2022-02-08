@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'config/Constants.dart';
 import 'hot_movies_list_widget.dart';
 
 class HotWeiget extends StatefulWidget {
@@ -13,8 +14,6 @@ class HotWeiget extends StatefulWidget {
 
 class HotWeigetState extends State<HotWeiget> {
   String curCity = "";
-  final SP_CUR_CITY_KEY = 'curCity';
-
   @override
   Widget build(BuildContext context) {
     // curCity = ModalRoute.of(context).settings.arguments;
@@ -26,7 +25,7 @@ class HotWeigetState extends State<HotWeiget> {
         return;
       }
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString(SP_CUR_CITY_KEY, selectCity.toString());
+      prefs.setString(SP_CUR_CITY, selectCity.toString());
       setState(() {
         curCity = selectCity.toString();
         print("curCity:" + selectCity.toString());
@@ -126,7 +125,7 @@ class HotWeigetState extends State<HotWeiget> {
 
   void initData() async {
     final prefs = await SharedPreferences.getInstance();
-    String city = prefs.getString(SP_CUR_CITY_KEY);
+    String city = prefs.getString(SP_CUR_CITY);
     if (city != null && city.isNotEmpty) {
       setState(() {curCity = city;});
     }

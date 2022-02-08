@@ -1,0 +1,2 @@
+const String SP_THEME_DARK = "SP_THEME_DARK";
+const SP_CUR_CITY = 'SP_CUR_CITY';

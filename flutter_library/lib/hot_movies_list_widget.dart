@@ -53,12 +53,14 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> {
   }
 
   void getMoviesForLocal() async {
-      final Database db = await initDataBase();
-      List<Map> maps = await db.query('Movies');
-      LogUtil.d("query data length:${maps.length}");
-      setState(() {
-        hotMovies = List.generate(maps.length, (i)=>HotMovie.fromJson(maps[i]));
-        LogUtil.d("hotMovies length:${hotMovies.length}");
+    // Future.delayed(Duration(seconds:3), () => "Hello") .then((x) => "$x 2019");
+      initDataBase().then((value) {
+          value.query('Movies').then((value) {
+            LogUtil.d("query Movies value: ${value.length}");
+            setState((){
+              hotMovies = List.generate(value.length, (i)=>HotMovie.fromJson(value[i]));
+            });
+          });
       });
   }
 
@@ -81,12 +83,7 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> {
     print('response.statusCode:'+response.statusCode.toString());
     //成功获取数据
     if (response.statusCode == 200) {
-      // LogUtil.d('response.body:'+response.body);
-      // log('response.body:' + response.data['movieList']);
-      //
-      // var responseJson = json.decode(response.data);
       for (dynamic data in response.data['movieList']) {
-        // print("data:"+ data.toString());
         HotMovie hotMovieData = HotMovie.fromJson(data);
         serverDataList.add(hotMovieData);
       }
@@ -95,14 +92,9 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> {
       });
       Database database = await initDataBase();
       for(int i=0; i<hotMovies.length; i++){
-        LogUtil.d("insert :" + hotMovies[i].toString());
         database.insert("Movies", hotMovies[i].toJson(),
             conflictAlgorithm: ConflictAlgorithm.replace);
-        // wait database.insert( 'students', hotMovies[i].toJson(), //插入冲突策略，新的替换旧的
-        //   conflictAlgorithm: ConflictAlgorithm.replace, );
       }
-      // wait database.insert( 'students', std.toJson(), //插入冲突策略，新的替换旧的
-      //   conflictAlgorithm: ConflictAlgorithm.replace, );
     }
   }
 
