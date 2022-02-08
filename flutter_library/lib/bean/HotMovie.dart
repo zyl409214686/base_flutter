@@ -34,13 +34,13 @@ class HotMovie {
 
   HotMovie.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    haspromotionTag = json['haspromotionTag'];
+    haspromotionTag = json['haspromotionTag']==1?true:false;
     img = json['img'];
     version = json['version'];
     nm = json['nm'];
-    preShow = json['preShow'];
+    preShow = json['preShow']==1?true:false;
     sc = json['sc'];
-    globalReleased = json['globalReleased'];
+    globalReleased = json['globalReleased']==1?true:false;
     wish = json['wish'];
     star = json['star'];
     rt = json['rt'];

@@ -4,12 +4,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_library/common/utils/log_util.dart';
 import 'package:http/http.dart' as http;
+import 'package:sqflite/sqflite.dart';
 import 'dart:convert' as convert;
 
 import 'hot_movies_item_widget.dart';
 import 'bean/HotMovie.dart';
 import 'config/httpHeaders.dart';
 import 'package:dio/dio.dart';
+import 'package:path/path.dart';
 
 class HotMoviesListWidget extends StatefulWidget {
   @override
@@ -41,14 +43,26 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> {
   }
 
   @override
-  void initState() {
+  Future<void> initState() {
     super.initState();
+
     // var data = HotMovieData('反贪风暴4', 6.3, '林德禄', '古天乐/郑嘉颖/林苗', 29013,
     //     'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2551353482.webp');
-    setState(() {
-       _getData();
-    });
+    getMoviesForLocal();
+    _getData();
   }
+
+  void getMoviesForLocal() async {
+      final Database db = await initDataBase();
+      List<Map> maps = await db.query('Movies');
+      LogUtil.d("query data length:${maps.length}");
+      setState(() {
+        hotMovies = List.generate(maps.length, (i)=>HotMovie.fromJson(maps[i]));
+        LogUtil.d("hotMovies length:${hotMovies.length}");
+      });
+  }
+
+
 
   // void getHttp() async {
   //   try {
@@ -79,6 +93,31 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> {
       setState(() {
         hotMovies = serverDataList;
       });
+      Database database = await initDataBase();
+      for(int i=0; i<hotMovies.length; i++){
+        LogUtil.d("insert :" + hotMovies[i].toString());
+        database.insert("Movies", hotMovies[i].toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace);
+        // wait database.insert( 'students', hotMovies[i].toJson(), //插入冲突策略，新的替换旧的
+        //   conflictAlgorithm: ConflictAlgorithm.replace, );
+      }
+      // wait database.insert( 'students', std.toJson(), //插入冲突策略，新的替换旧的
+      //   conflictAlgorithm: ConflictAlgorithm.replace, );
     }
   }
+
+  Future<Database> initDataBase() async {
+    LogUtil.d("databasepath:" + join(await getDatabasesPath(), 'movies.db'));
+    var db = await openDatabase(
+        join(await getDatabasesPath(), 'movies.db'), version: 1, onCreate: (Database db, int version) async{
+      await db.execute(
+          'CREATE TABLE Movies (id INTEGER PRIMARY KEY, img TEXT, nm TEXT, sc TEXT, showInfo TEXT, '
+              'haspromotionTag INTEGER, version TEXT, preShow INTEGER, globalReleased INTEGER,'
+              'wish INTEGER, star TEXT, showst INTEGER, wishst INTEGER, comingTitle TEXT, rt TEXT)');
+    });
+    return db;
+  }
+    // final Future database = openDatabase( join(await getDatabasesPath(), 'students_database.db'), onCreate: (db, version)=>db.execute("CREATE TABLE students(id TEXT PRIMARY KEY, name TEXT, score INTEGER)"), onUpgrade: (db, oldVersion, newVersion){ //dosth for migration
+    //   }, version: 1,);
+    // }
 }
