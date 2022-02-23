@@ -8,8 +8,8 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:convert' as convert;
 
 import 'hot_movies_item_widget.dart';
-import 'bean/HotMovie.dart';
-import 'config/httpHeaders.dart';
+import '../bean/HotMovie.dart';
+import '../config/httpHeaders.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 
@@ -25,9 +25,12 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(delegate: SliverChildBuilderDelegate(
-        (context, index) => HotMoviesItemWidget(hotMovies[index]),
-        childCount: hotMovies.length)
+    return SliverFixedExtentList(
+        itemExtent:100,
+        delegate: SliverChildBuilderDelegate(
+        (context, index) => HotMoviesItemWidget(hotMovies[index], index<hotMovies.length-1),
+        childCount: hotMovies.length,
+        )
     );
     // return ListView.separated(
     //     itemBuilder: (context, index){

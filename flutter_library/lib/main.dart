@@ -4,7 +4,7 @@ import 'package:flutter_library/view_model/ThemeModel.dart';
 import 'package:provider/provider.dart';
 
 import 'citys_widget.dart';
-import 'hot_weiget.dart';
+import 'hot/hot_weiget.dart';
 import 'mine_widget.dart';
 import 'movies_widget.dart';
 
